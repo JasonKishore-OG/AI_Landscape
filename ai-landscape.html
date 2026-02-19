@@ -1,0 +1,1819 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The AI Landscape — A Complete Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;1,9..144,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #0f0e0c;
+  --ink2: #2a2720;
+  --paper: #f5f0e8;
+  --paper2: #ede7d6;
+  --paper3: #e4dcc8;
+  --accent: #c84b2f;
+  --accent2: #2a6496;
+  --accent3: #4a7c59;
+  --gold: #b8943c;
+  --muted: #7a7060;
+  --border: #cfc5b0;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'DM Mono', monospace;
+  background: var(--paper);
+  color: var(--ink);
+  overflow-x: hidden;
+  cursor: default;
+}
+
+/* ── NOISE TEXTURE OVERLAY ── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.4;
+}
+
+/* ── SIDEBAR NAV ── */
+#sidebar {
+  position: fixed;
+  left: 0; top: 0; bottom: 0;
+  width: 220px;
+  background: var(--ink);
+  color: var(--paper2);
+  display: flex;
+  flex-direction: column;
+  z-index: 100;
+  border-right: 3px solid var(--accent);
+  overflow-y: auto;
+}
+
+.sidebar-brand {
+  padding: 28px 20px 20px;
+  border-bottom: 1px solid #2a2720;
+}
+.sidebar-brand-title {
+  font-family: 'Fraunces', serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--paper);
+  line-height: 1.3;
+}
+.sidebar-brand-sub {
+  font-size: 9px;
+  color: #5a5040;
+  letter-spacing: 0.1em;
+  margin-top: 6px;
+  text-transform: uppercase;
+}
+
+.nav-section-label {
+  font-size: 8px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #4a4030;
+  padding: 20px 20px 8px;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 20px;
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  color: #8a806a;
+  cursor: pointer;
+  border-left: 3px solid transparent;
+  transition: all 0.2s;
+  text-decoration: none;
+}
+.nav-item:hover { color: var(--paper); background: rgba(255,255,255,0.04); }
+.nav-item.active { color: var(--paper); border-left-color: var(--accent); background: rgba(200,75,47,0.1); }
+.nav-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+
+/* ── MAIN CONTENT ── */
+#main {
+  margin-left: 220px;
+  min-height: 100vh;
+}
+
+/* ── HERO ── */
+#hero {
+  background: var(--ink);
+  color: var(--paper);
+  padding: 80px 80px 60px;
+  position: relative;
+  overflow: hidden;
+  border-bottom: 4px solid var(--accent);
+}
+.hero-kicker {
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 24px;
+  font-family: 'DM Mono', monospace;
+}
+.hero-title {
+  font-family: 'Fraunces', serif;
+  font-size: clamp(48px, 6vw, 88px);
+  font-weight: 700;
+  line-height: 0.95;
+  letter-spacing: -0.02em;
+  margin-bottom: 32px;
+}
+.hero-title em {
+  font-style: italic;
+  color: var(--gold);
+}
+.hero-sub {
+  font-size: 14px;
+  color: #8a806a;
+  max-width: 600px;
+  line-height: 1.7;
+  margin-bottom: 48px;
+}
+.hero-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 1px;
+  background: #2a2720;
+  border: 1px solid #2a2720;
+}
+.hero-stat {
+  background: var(--ink2);
+  padding: 20px;
+  text-align: center;
+}
+.hero-stat-n {
+  font-family: 'Fraunces', serif;
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--paper);
+}
+.hero-stat-l { font-size: 9px; color: #5a5040; letter-spacing: 0.1em; text-transform: uppercase; margin-top: 4px; }
+
+/* ── UMBRELLA CARDS (overview) ── */
+#overview {
+  padding: 60px 80px;
+  border-bottom: 1px solid var(--border);
+}
+.section-header {
+  display: flex;
+  align-items: baseline;
+  gap: 20px;
+  margin-bottom: 40px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid var(--ink);
+}
+.section-num {
+  font-family: 'Fraunces', serif;
+  font-size: 60px;
+  font-weight: 700;
+  color: var(--paper3);
+  line-height: 1;
+}
+.section-title {
+  font-family: 'Fraunces', serif;
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1;
+}
+.section-desc { color: var(--muted); font-size: 12px; line-height: 1.6; margin-top: 8px; max-width: 600px; }
+
+.umbrella-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 2px;
+  background: var(--border);
+}
+.umbrella-card {
+  background: var(--paper);
+  padding: 28px 20px;
+  cursor: pointer;
+  transition: all 0.2s;
+  border-top: 4px solid transparent;
+  position: relative;
+  overflow: hidden;
+}
+.umbrella-card::after {
+  content: '→';
+  position: absolute;
+  bottom: 16px;
+  right: 16px;
+  font-size: 16px;
+  opacity: 0;
+  transition: opacity 0.2s, transform 0.2s;
+}
+.umbrella-card:hover::after { opacity: 1; transform: translateX(4px); }
+.umbrella-card:hover { background: var(--paper2); }
+.umbrella-card.active { background: var(--ink); color: var(--paper); }
+.umbrella-card.active::after { opacity: 1; color: var(--accent); }
+.umb-num {
+  font-size: 9px;
+  letter-spacing: 0.15em;
+  color: var(--muted);
+  margin-bottom: 12px;
+  font-family: 'DM Mono', monospace;
+}
+.umbrella-card.active .umb-num { color: #5a5040; }
+.umb-title {
+  font-family: 'Fraunces', serif;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: 10px;
+}
+.umb-desc { font-size: 10px; line-height: 1.6; color: var(--muted); }
+.umbrella-card.active .umb-desc { color: #8a806a; }
+.umb-icon { font-size: 28px; margin-bottom: 12px; }
+
+/* ── DETAIL PANEL ── */
+#detail-panel {
+  background: var(--paper2);
+  border: 1px solid var(--border);
+  border-left: 6px solid var(--accent);
+  margin: 24px 0 0;
+  padding: 40px;
+  display: none;
+  animation: slideDown 0.3s ease;
+}
+@keyframes slideDown { from { opacity:0; transform:translateY(-10px); } to { opacity:1; transform:translateY(0); } }
+
+.detail-title {
+  font-family: 'Fraunces', serif;
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+.detail-tagline { color: var(--muted); font-size: 12px; margin-bottom: 28px; }
+.detail-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
+.detail-card {
+  background: var(--paper);
+  border: 1px solid var(--border);
+  padding: 20px;
+  border-radius: 2px;
+}
+.detail-card h4 { font-family: 'Fraunces', serif; font-size: 14px; margin-bottom: 8px; }
+.detail-card p { font-size: 11px; line-height: 1.7; color: var(--muted); }
+.detail-card code {
+  display: block;
+  background: var(--ink);
+  color: var(--accent);
+  padding: 10px;
+  font-size: 10px;
+  margin-top: 10px;
+  border-radius: 2px;
+  line-height: 1.6;
+}
+
+/* ── FULL SECTION PAGES ── */
+.content-section {
+  padding: 60px 80px;
+  border-bottom: 1px solid var(--border);
+}
+.content-section:nth-child(even) { background: var(--paper2); }
+
+/* ── ML SECTION ── */
+.ml-timeline {
+  position: relative;
+  padding-left: 40px;
+  margin: 32px 0;
+}
+.ml-timeline::before {
+  content: '';
+  position: absolute;
+  left: 6px;
+  top: 0; bottom: 0;
+  width: 2px;
+  background: linear-gradient(to bottom, var(--accent), var(--accent2), var(--accent3));
+}
+.timeline-item {
+  position: relative;
+  margin-bottom: 28px;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+.timeline-item:hover { transform: translateX(4px); }
+.timeline-dot {
+  position: absolute;
+  left: -37px;
+  top: 4px;
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  border: 2px solid var(--paper);
+}
+.timeline-year {
+  font-size: 9px;
+  letter-spacing: 0.15em;
+  color: var(--muted);
+  margin-bottom: 4px;
+}
+.timeline-title { font-family: 'Fraunces', serif; font-size: 18px; font-weight: 700; margin-bottom: 6px; }
+.timeline-body { font-size: 11px; color: var(--muted); line-height: 1.6; }
+
+/* ── ALGORITHM CARDS ── */
+.algo-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin: 24px 0; }
+.algo-card {
+  border: 1px solid var(--border);
+  padding: 20px;
+  background: var(--paper);
+  transition: all 0.2s;
+  cursor: pointer;
+}
+.algo-card:hover {
+  border-color: var(--ink);
+  background: var(--ink);
+  color: var(--paper);
+}
+.algo-card:hover .algo-desc { color: #8a806a; }
+.algo-name { font-family: 'Fraunces', serif; font-size: 16px; font-weight: 700; margin-bottom: 6px; }
+.algo-type { font-size: 9px; letter-spacing: 0.1em; color: var(--accent); text-transform: uppercase; margin-bottom: 8px; }
+.algo-desc { font-size: 11px; line-height: 1.6; color: var(--muted); }
+
+/* ── INTERACTIVE BIAS/VARIANCE ── */
+#bv-canvas {
+  width: 100%;
+  height: 220px;
+  background: var(--paper);
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  cursor: crosshair;
+  display: block;
+}
+.bv-controls { display: flex; gap: 12px; margin: 12px 0; flex-wrap: wrap; }
+.bv-btn {
+  padding: 8px 20px;
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  border: 1px solid var(--border);
+  background: var(--paper);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.bv-btn:hover, .bv-btn.active { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+
+/* ── DL SECTION ── */
+.arch-comparison {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2px;
+  background: var(--border);
+  margin: 24px 0;
+}
+.arch-card {
+  background: var(--paper);
+  padding: 24px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.arch-card:hover { background: var(--paper2); }
+.arch-icon { font-size: 36px; margin-bottom: 12px; }
+.arch-name { font-family: 'Fraunces', serif; font-size: 15px; font-weight: 700; margin-bottom: 6px; }
+.arch-use { font-size: 10px; color: var(--muted); line-height: 1.6; }
+.arch-badge {
+  display: inline-block;
+  font-size: 8px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 2px 8px;
+  margin-top: 10px;
+  border-radius: 2px;
+}
+
+/* ── CV SECTION ── */
+.cv-task-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin: 24px 0; }
+.cv-task {
+  border: 1px solid var(--border);
+  padding: 24px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  background: var(--paper);
+  transition: all 0.2s;
+}
+.cv-task::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+}
+.cv-task:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.08); }
+.cv-task-name { font-family: 'Fraunces', serif; font-size: 16px; font-weight: 700; margin-bottom: 6px; }
+.cv-task-ex { font-size: 9px; color: var(--muted); font-style: italic; margin-bottom: 10px; }
+.cv-task-desc { font-size: 11px; color: var(--muted); line-height: 1.6; }
+
+/* ── NLP SECTION ── */
+.nlp-embed-demo {
+  background: var(--paper);
+  border: 1px solid var(--border);
+  padding: 28px;
+  margin: 24px 0;
+}
+.embed-words { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; }
+.embed-word {
+  padding: 8px 16px;
+  border: 1px solid var(--border);
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+  border-radius: 2px;
+  user-select: none;
+}
+.embed-word:hover { background: var(--ink); color: var(--paper); }
+.embed-word.selected { background: var(--accent); color: white; border-color: var(--accent); }
+.embed-result {
+  font-size: 12px;
+  color: var(--muted);
+  font-style: italic;
+  min-height: 20px;
+  transition: all 0.3s;
+}
+
+/* ── RL SECTION ── */
+#rl-grid { display: grid; grid-template-columns: repeat(8, 1fr); gap: 4px; margin: 24px 0; }
+.rl-cell {
+  aspect-ratio: 1;
+  border-radius: 3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  cursor: pointer;
+  transition: all 0.15s;
+  background: var(--paper2);
+  border: 1px solid var(--border);
+  position: relative;
+}
+.rl-cell:hover { transform: scale(1.05); }
+.rl-cell.agent { background: var(--accent2); }
+.rl-cell.goal { background: var(--accent3); }
+.rl-cell.obstacle { background: var(--ink2); }
+.rl-cell.visited { background: rgba(42,100,150,0.2); }
+.rl-cell.path { background: rgba(74,124,89,0.3); }
+.rl-controls-row { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; }
+#rl-info { font-size: 11px; color: var(--muted); margin: 10px 0; min-height: 20px; }
+#rl-reward { font-family: 'Fraunces', serif; font-size: 24px; font-weight: 700; }
+
+/* ── GENERATIVE AI ── */
+.gen-types { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin: 24px 0; }
+.gen-card {
+  padding: 24px;
+  border: 1px solid var(--border);
+  background: var(--paper);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.gen-card:hover { background: var(--ink); color: var(--paper); }
+.gen-card:hover .gen-desc { color: #7a7060; }
+.gen-icon { font-size: 32px; margin-bottom: 12px; }
+.gen-name { font-family: 'Fraunces', serif; font-size: 15px; font-weight: 700; margin-bottom: 6px; }
+.gen-desc { font-size: 11px; color: var(--muted); line-height: 1.6; }
+
+/* ── ROBOTICS ── */
+.robot-stack { display: grid; grid-template-columns: 1fr; gap: 0; margin: 24px 0; }
+.stack-layer {
+  padding: 20px 28px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.stack-layer:hover { background: var(--paper2); padding-left: 36px; }
+.stack-level {
+  font-family: 'Fraunces', serif;
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--paper3);
+  min-width: 50px;
+}
+.stack-name { font-family: 'Fraunces', serif; font-size: 16px; font-weight: 700; margin-bottom: 4px; }
+.stack-desc { font-size: 11px; color: var(--muted); line-height: 1.5; }
+
+/* ── SAFETY ── */
+.safety-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 24px 0; }
+.safety-card {
+  padding: 28px;
+  border: 1px solid var(--border);
+  background: var(--paper);
+  border-left: 4px solid;
+}
+.safety-card h4 { font-family: 'Fraunces', serif; font-size: 16px; font-weight: 700; margin-bottom: 8px; }
+.safety-card p { font-size: 11px; color: var(--muted); line-height: 1.7; }
+
+/* ── MLOPS ── */
+.pipeline-flow {
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  margin: 24px 0;
+  overflow-x: auto;
+  background: var(--border);
+  gap: 1px;
+}
+.pipe-stage {
+  flex: 1;
+  min-width: 120px;
+  background: var(--paper);
+  padding: 20px 16px;
+  cursor: pointer;
+  transition: background 0.2s;
+  text-align: center;
+}
+.pipe-stage:hover { background: var(--paper2); }
+.pipe-icon { font-size: 24px; margin-bottom: 8px; }
+.pipe-name { font-family: 'Fraunces', serif; font-size: 13px; font-weight: 700; margin-bottom: 6px; }
+.pipe-desc { font-size: 9px; color: var(--muted); line-height: 1.5; }
+#pipe-detail {
+  background: var(--paper2);
+  border-left: 4px solid var(--accent2);
+  padding: 24px 28px;
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.7;
+  min-height: 60px;
+  display: none;
+}
+
+/* ── ETHICS ── */
+.ethics-dial {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin: 24px 0;
+}
+.dial-card {
+  padding: 24px;
+  border: 1px solid var(--border);
+  background: var(--paper);
+  text-align: center;
+}
+.dial-label { font-family: 'Fraunces', serif; font-size: 14px; font-weight: 700; margin-bottom: 16px; }
+.dial-ring {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  margin: 0 auto 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Fraunces', serif;
+  font-size: 20px;
+  font-weight: 700;
+  border: 6px solid;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+.dial-ring:hover { transform: scale(1.05); }
+.dial-desc { font-size: 10px; color: var(--muted); line-height: 1.5; }
+
+/* ── QUOTE BLOCK ── */
+.pull-quote {
+  font-family: 'Fraunces', serif;
+  font-size: clamp(20px, 3vw, 32px);
+  font-style: italic;
+  line-height: 1.3;
+  padding: 40px 0;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  margin: 40px 0;
+  color: var(--ink2);
+}
+.pull-quote span { color: var(--accent); }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 900px) {
+  #sidebar { width: 180px; }
+  #main { margin-left: 180px; }
+  #hero, .content-section, #overview { padding: 40px 32px; }
+  .umbrella-grid { grid-template-columns: repeat(2, 1fr); }
+  .detail-grid, .algo-grid, .arch-comparison, .gen-types, .ethics-dial { grid-template-columns: 1fr 1fr; }
+  .cv-task-grid { grid-template-columns: 1fr; }
+  .hero-grid { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 600px) {
+  #sidebar { width: 100%; height: auto; position: relative; }
+  #main { margin-left: 0; }
+}
+
+/* ── UTILITY ── */
+p { line-height: 1.7; font-size: 12px; color: var(--muted); margin-bottom: 14px; }
+h3 { font-family: 'Fraunces', serif; font-size: 20px; font-weight: 700; margin-bottom: 12px; }
+.tag {
+  display: inline-block;
+  font-size: 9px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  border-radius: 2px;
+  margin-bottom: 20px;
+}
+.tag-r { background: rgba(200,75,47,0.12); color: var(--accent); border: 1px solid rgba(200,75,47,0.25); }
+.tag-b { background: rgba(42,100,150,0.12); color: var(--accent2); border: 1px solid rgba(42,100,150,0.25); }
+.tag-g { background: rgba(74,124,89,0.12); color: var(--accent3); border: 1px solid rgba(74,124,89,0.25); }
+.tag-d { background: rgba(15,14,12,0.08); color: var(--ink); border: 1px solid rgba(15,14,12,0.2); }
+
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: start; }
+@media(max-width:700px) { .two-col { grid-template-columns: 1fr; } }
+
+hr.rule { border: none; border-top: 1px solid var(--border); margin: 32px 0; }
+
+/* ── FORMULA ── */
+.formula {
+  background: var(--ink);
+  color: #e0d8c8;
+  padding: 16px 20px;
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+  line-height: 1.8;
+  margin: 16px 0;
+  border-radius: 2px;
+  border-left: 3px solid var(--accent);
+}
+.formula .comment { color: #4a4030; }
+</style>
+</head>
+<body>
+
+<!-- ── SIDEBAR ── -->
+<nav id="sidebar">
+  <div class="sidebar-brand">
+    <div class="sidebar-brand-title">The AI<br>Landscape</div>
+    <div class="sidebar-brand-sub">A Complete Guide</div>
+  </div>
+
+  <div class="nav-section-label">Foundations</div>
+  <a class="nav-item active" onclick="scrollTo('overview')">
+    <div class="nav-dot" style="background:#b8943c"></div> Overview
+  </a>
+  <a class="nav-item" onclick="scrollTo('ml')">
+    <div class="nav-dot" style="background:#c84b2f"></div> Machine Learning
+  </a>
+  <a class="nav-item" onclick="scrollTo('dl')">
+    <div class="nav-dot" style="background:#2a6496"></div> Deep Learning
+  </a>
+
+  <div class="nav-section-label">Domains</div>
+  <a class="nav-item" onclick="scrollTo('cv')">
+    <div class="nav-dot" style="background:#c84b2f"></div> Computer Vision
+  </a>
+  <a class="nav-item" onclick="scrollTo('nlp')">
+    <div class="nav-dot" style="background:#4a7c59"></div> NLP
+  </a>
+  <a class="nav-item" onclick="scrollTo('rl')">
+    <div class="nav-dot" style="background:#b8943c"></div> Reinforcement Learning
+  </a>
+  <a class="nav-item" onclick="scrollTo('gen')">
+    <div class="nav-dot" style="background:#2a6496"></div> Generative AI
+  </a>
+
+  <div class="nav-section-label">Advanced</div>
+  <a class="nav-item" onclick="scrollTo('robotics')">
+    <div class="nav-dot" style="background:#4a7c59"></div> Robotics & Embodied AI
+  </a>
+  <a class="nav-item" onclick="scrollTo('safety')">
+    <div class="nav-dot" style="background:#c84b2f"></div> AI Safety
+  </a>
+  <a class="nav-item" onclick="scrollTo('mlops')">
+    <div class="nav-dot" style="background:#b8943c"></div> MLOps
+  </a>
+  <a class="nav-item" onclick="scrollTo('ethics')">
+    <div class="nav-dot" style="background:#2a6496"></div> Ethics & Governance
+  </a>
+</nav>
+
+<!-- ── MAIN ── -->
+<div id="main">
+
+<!-- HERO -->
+<div id="hero-section">
+<div id="hero">
+  <div class="hero-kicker">The Definitive Visual Guide · 2024–2025</div>
+  <h1 class="hero-title">Artificial<br><em>Intelligence</em><br>Explained.</h1>
+  <p class="hero-sub">From the mathematics of a single neuron to the ethics of trillion-parameter models — every major discipline, concept, and tool in the field of AI, made interactive.</p>
+  <div class="hero-grid">
+    <div class="hero-stat"><div class="hero-stat-n">10</div><div class="hero-stat-l">Umbrellas</div></div>
+    <div class="hero-stat"><div class="hero-stat-n">60+</div><div class="hero-stat-l">Concepts</div></div>
+    <div class="hero-stat"><div class="hero-stat-n">∞</div><div class="hero-stat-l">Depth</div></div>
+    <div class="hero-stat"><div class="hero-stat-n">1950s</div><div class="hero-stat-l">Origins</div></div>
+    <div class="hero-stat"><div class="hero-stat-n">Now</div><div class="hero-stat-l">Current State</div></div>
+  </div>
+</div>
+</div>
+
+<!-- ══════ OVERVIEW ══════ -->
+<div class="content-section" id="overview">
+  <div class="section-header">
+    <div class="section-num">00</div>
+    <div>
+      <div class="section-title">The 10 Umbrellas</div>
+      <p class="section-desc">Every AI discipline falls under one of these. Click any to expand it.</p>
+    </div>
+  </div>
+
+  <div class="umbrella-grid">
+    <div class="umbrella-card" style="border-top-color:#c84b2f" onclick="toggleUmbrella(0,this)">
+      <div class="umb-num">01</div>
+      <div class="umb-icon">🧠</div>
+      <div class="umb-title">Machine Learning</div>
+      <div class="umb-desc">Learning patterns from data without explicit programming.</div>
+    </div>
+    <div class="umbrella-card" style="border-top-color:#2a6496" onclick="toggleUmbrella(1,this)">
+      <div class="umb-num">02</div>
+      <div class="umb-icon">🔬</div>
+      <div class="umb-title">Deep Learning</div>
+      <div class="umb-desc">Neural networks with many layers that learn hierarchical representations.</div>
+    </div>
+    <div class="umbrella-card" style="border-top-color:#4a7c59" onclick="toggleUmbrella(2,this)">
+      <div class="umb-num">03</div>
+      <div class="umb-icon">👁</div>
+      <div class="umb-title">Computer Vision</div>
+      <div class="umb-desc">Teaching machines to see, interpret, and understand visual data.</div>
+    </div>
+    <div class="umbrella-card" style="border-top-color:#b8943c" onclick="toggleUmbrella(3,this)">
+      <div class="umb-num">04</div>
+      <div class="umb-icon">💬</div>
+      <div class="umb-title">NLP</div>
+      <div class="umb-desc">Understanding, generating, and reasoning about human language.</div>
+    </div>
+    <div class="umbrella-card" style="border-top-color:#c84b2f" onclick="toggleUmbrella(4,this)">
+      <div class="umb-num">05</div>
+      <div class="umb-icon">🎮</div>
+      <div class="umb-title">Reinforcement Learning</div>
+      <div class="umb-desc">Agents that learn through trial, reward, and environment interaction.</div>
+    </div>
+    <div class="umbrella-card" style="border-top-color:#2a6496" onclick="toggleUmbrella(5,this)">
+      <div class="umb-num">06</div>
+      <div class="umb-icon">✨</div>
+      <div class="umb-title">Generative AI</div>
+      <div class="umb-desc">Models that create — images, text, audio, video, code, and more.</div>
+    </div>
+    <div class="umbrella-card" style="border-top-color:#4a7c59" onclick="toggleUmbrella(6,this)">
+      <div class="umb-num">07</div>
+      <div class="umb-icon">🤖</div>
+      <div class="umb-title">Robotics & Embodied AI</div>
+      <div class="umb-desc">AI that acts in the physical world through sensors and actuators.</div>
+    </div>
+    <div class="umbrella-card" style="border-top-color:#b8943c" onclick="toggleUmbrella(7,this)">
+      <div class="umb-num">08</div>
+      <div class="umb-icon">🛡</div>
+      <div class="umb-title">AI Safety & Alignment</div>
+      <div class="umb-desc">Ensuring AI systems are safe, controllable, and aligned with human values.</div>
+    </div>
+    <div class="umbrella-card" style="border-top-color:#c84b2f" onclick="toggleUmbrella(8,this)">
+      <div class="umb-num">09</div>
+      <div class="umb-icon">⚙️</div>
+      <div class="umb-title">MLOps</div>
+      <div class="umb-desc">The engineering discipline of deploying, monitoring, and scaling ML in production.</div>
+    </div>
+    <div class="umbrella-card" style="border-top-color:#2a6496" onclick="toggleUmbrella(9,this)">
+      <div class="umb-num">10</div>
+      <div class="umb-icon">⚖️</div>
+      <div class="umb-title">Ethics & Governance</div>
+      <div class="umb-desc">Fairness, bias, regulation, transparency, and responsible deployment.</div>
+    </div>
+  </div>
+
+  <div id="detail-panel"></div>
+</div>
+
+<!-- ══════ MACHINE LEARNING ══════ -->
+<div class="content-section" id="ml">
+  <div class="section-header">
+    <div class="section-num">01</div>
+    <div>
+      <div class="section-title">Machine Learning</div>
+      <p class="section-desc">The discipline of building systems that learn from data. Three paradigms, hundreds of algorithms.</p>
+    </div>
+  </div>
+
+  <div class="tag tag-r">Foundation of All AI</div>
+
+  <div class="two-col">
+    <div>
+      <h3>The Three Paradigms</h3>
+      <p>All of machine learning falls into three learning paradigms based on the type of feedback available to the algorithm:</p>
+
+      <div style="border:1px solid var(--border); margin:20px 0;">
+        <div style="background:rgba(200,75,47,0.08); border-bottom:1px solid var(--border); padding:16px 20px;">
+          <strong style="font-family:'Fraunces',serif">Supervised Learning</strong>
+          <p style="margin:6px 0 0">Labeled data. Model learns a mapping X → Y. Classification, regression.</p>
+        </div>
+        <div style="background:rgba(42,100,150,0.08); border-bottom:1px solid var(--border); padding:16px 20px;">
+          <strong style="font-family:'Fraunces',serif">Unsupervised Learning</strong>
+          <p style="margin:6px 0 0">No labels. Find hidden structure. Clustering, dimensionality reduction.</p>
+        </div>
+        <div style="background:rgba(74,124,89,0.08); padding:16px 20px;">
+          <strong style="font-family:'Fraunces',serif">Reinforcement Learning</strong>
+          <p style="margin:6px 0 0">Learn by reward signal from environment. Agents, policies, rewards.</p>
+        </div>
+      </div>
+
+      <h3>Core Algorithms</h3>
+      <p>Click any algorithm to see how it works:</p>
+      <div class="algo-grid">
+        <div class="algo-card" onclick="showAlgo('lr')">
+          <div class="algo-type">Supervised</div>
+          <div class="algo-name">Linear Regression</div>
+          <div class="algo-desc">Fit a line to minimize MSE. The simplest model.</div>
+        </div>
+        <div class="algo-card" onclick="showAlgo('dt')">
+          <div class="algo-type">Supervised</div>
+          <div class="algo-name">Decision Trees</div>
+          <div class="algo-desc">Split data by feature thresholds recursively.</div>
+        </div>
+        <div class="algo-card" onclick="showAlgo('rf')">
+          <div class="algo-type">Ensemble</div>
+          <div class="algo-name">Random Forest</div>
+          <div class="algo-desc">100+ trees voting. Reduces variance via bagging.</div>
+        </div>
+        <div class="algo-card" onclick="showAlgo('svm')">
+          <div class="algo-type">Supervised</div>
+          <div class="algo-name">SVM</div>
+          <div class="algo-desc">Maximize margin between classes. Kernel trick for nonlinearity.</div>
+        </div>
+        <div class="algo-card" onclick="showAlgo('km')">
+          <div class="algo-type">Unsupervised</div>
+          <div class="algo-name">K-Means</div>
+          <div class="algo-desc">Assign points to K nearest centroids. Iterate until stable.</div>
+        </div>
+        <div class="algo-card" onclick="showAlgo('xgb')">
+          <div class="algo-type">Ensemble</div>
+          <div class="algo-name">XGBoost</div>
+          <div class="algo-desc">Gradient boosted trees. Wins most tabular data competitions.</div>
+        </div>
+      </div>
+      <div id="algo-detail" style="display:none; background:var(--paper2); border-left:4px solid var(--accent); padding:20px; font-size:11px; color:var(--muted); line-height:1.7; margin-top:8px;"></div>
+    </div>
+
+    <div>
+      <h3>Bias–Variance Tradeoff</h3>
+      <p>The fundamental tension in ML. High bias = underfitting (too simple). High variance = overfitting (too complex). Click to see each:</p>
+      <div class="bv-controls">
+        <button class="bv-btn active" onclick="drawBV('underfit',this)">Underfitting</button>
+        <button class="bv-btn" onclick="drawBV('goodfit',this)">Good Fit</button>
+        <button class="bv-btn" onclick="drawBV('overfit',this)">Overfitting</button>
+      </div>
+      <canvas id="bv-canvas"></canvas>
+      <p id="bv-caption" style="text-align:center; font-style:italic; margin-top:8px;"></p>
+
+      <hr class="rule">
+      <h3>Model Evaluation</h3>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:16px;">
+        <div style="padding:16px; border:1px solid var(--border); background:var(--paper);">
+          <strong style="font-size:12px; font-family:'Fraunces',serif">Precision</strong>
+          <div class="formula" style="margin-top:8px; padding:10px;">TP / (TP + FP)</div>
+          <p style="margin:0; font-size:10px">Of predicted positives, how many are right?</p>
+        </div>
+        <div style="padding:16px; border:1px solid var(--border); background:var(--paper);">
+          <strong style="font-size:12px; font-family:'Fraunces',serif">Recall</strong>
+          <div class="formula" style="margin-top:8px; padding:10px;">TP / (TP + FN)</div>
+          <p style="margin:0; font-size:10px">Of actual positives, how many did we catch?</p>
+        </div>
+        <div style="padding:16px; border:1px solid var(--border); background:var(--paper);">
+          <strong style="font-size:12px; font-family:'Fraunces',serif">F1 Score</strong>
+          <div class="formula" style="margin-top:8px; padding:10px;">2·P·R / (P + R)</div>
+          <p style="margin:0; font-size:10px">Harmonic mean of precision and recall.</p>
+        </div>
+        <div style="padding:16px; border:1px solid var(--border); background:var(--paper);">
+          <strong style="font-size:12px; font-family:'Fraunces',serif">AUC-ROC</strong>
+          <div class="formula" style="margin-top:8px; padding:10px;">Area under ROC</div>
+          <p style="margin:0; font-size:10px">Threshold-independent ranking quality.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="pull-quote">"Machine learning is the last <span>invention</span> that humanity will ever need to make."</div>
+
+  <h3>A Brief History</h3>
+  <div class="ml-timeline">
+    <div class="timeline-item">
+      <div class="timeline-dot" style="background:#b8943c; border-color:var(--paper)"></div>
+      <div class="timeline-year">1950s</div>
+      <div class="timeline-title">Perceptron & Neural Beginnings</div>
+      <div class="timeline-body">Rosenblatt's perceptron (1958) — the first learnable classifier. The idea that machines could learn from examples.</div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-dot" style="background:#c84b2f; border-color:var(--paper)"></div>
+      <div class="timeline-year">1980s–90s</div>
+      <div class="timeline-title">Backpropagation & SVMs</div>
+      <div class="timeline-body">Rumelhart & Hinton popularize backprop. Vapnik introduces SVMs. Decision trees and ensemble methods emerge.</div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-dot" style="background:#2a6496; border-color:var(--paper)"></div>
+      <div class="timeline-year">2000s</div>
+      <div class="timeline-title">Boosting & Kernel Machines</div>
+      <div class="timeline-body">AdaBoost, Random Forests, gradient boosting. SVMs dominate many benchmarks. First serious ML competitions (Netflix Prize).</div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-dot" style="background:#4a7c59; border-color:var(--paper)"></div>
+      <div class="timeline-year">2012–now</div>
+      <div class="timeline-title">The Deep Learning Revolution</div>
+      <div class="timeline-body">AlexNet crushes ImageNet. GPUs unlock scale. Deep learning supersedes classical ML in perception tasks.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ DEEP LEARNING ══════ -->
+<div class="content-section" id="dl">
+  <div class="section-header">
+    <div class="section-num">02</div>
+    <div>
+      <div class="section-title">Deep Learning</div>
+      <p class="section-desc">Neural networks with depth. Each layer learns increasingly abstract representations of the data.</p>
+    </div>
+  </div>
+  <div class="tag tag-b">Core Architecture Families</div>
+
+  <div class="arch-comparison">
+    <div class="arch-card" onclick="showArch('mlp')">
+      <div class="arch-icon">🔢</div>
+      <div class="arch-name">MLP / Feedforward</div>
+      <div class="arch-use">Tabular data, regression, general purpose. Dense connections, forward only.</div>
+      <div class="arch-badge tag-r">Universal Approximator</div>
+    </div>
+    <div class="arch-card" onclick="showArch('cnn')">
+      <div class="arch-icon">📸</div>
+      <div class="arch-name">CNN</div>
+      <div class="arch-use">Images and spatial data. Shared weights via convolution. Translation equivariant.</div>
+      <div class="arch-badge tag-g">Vision Tasks</div>
+    </div>
+    <div class="arch-card" onclick="showArch('rnn')">
+      <div class="arch-icon">🔄</div>
+      <div class="arch-name">RNN / LSTM / GRU</div>
+      <div class="arch-use">Sequential data. Hidden state carries memory. Suffers from vanishing gradients at long range.</div>
+      <div class="arch-badge tag-b">Time Series</div>
+    </div>
+    <div class="arch-card" onclick="showArch('transformer')">
+      <div class="arch-icon">⚡</div>
+      <div class="arch-name">Transformer</div>
+      <div class="arch-use">Self-attention over entire sequence. Parallel. Scales to trillion parameters. Foundation of LLMs.</div>
+      <div class="arch-badge tag-d">Current SOTA</div>
+    </div>
+    <div class="arch-card" onclick="showArch('gan')">
+      <div class="arch-icon">⚔️</div>
+      <div class="arch-name">GAN</div>
+      <div class="arch-use">Generator vs discriminator game. Produces realistic synthetic data. Notoriously hard to train.</div>
+      <div class="arch-badge tag-r">Generative</div>
+    </div>
+    <div class="arch-card" onclick="showArch('vae')">
+      <div class="arch-icon">🔭</div>
+      <div class="arch-name">VAE</div>
+      <div class="arch-use">Encode to latent distribution, decode back. Continuous latent space for generation.</div>
+      <div class="arch-badge tag-g">Latent Space</div>
+    </div>
+    <div class="arch-card" onclick="showArch('diffusion')">
+      <div class="arch-icon">🌊</div>
+      <div class="arch-name">Diffusion Model</div>
+      <div class="arch-use">Learn to reverse noise. Behind Stable Diffusion, DALL·E. Slower inference, superior quality.</div>
+      <div class="arch-badge tag-b">SOTA Generation</div>
+    </div>
+    <div class="arch-card" onclick="showArch('gnn')">
+      <div class="arch-icon">🕸</div>
+      <div class="arch-name">Graph NN</div>
+      <div class="arch-use">Non-Euclidean data: molecules, social networks, knowledge graphs. Message passing between nodes.</div>
+      <div class="arch-badge tag-d">Relational Data</div>
+    </div>
+  </div>
+  <div id="arch-detail" style="display:none; background:var(--paper2); border-left:6px solid var(--accent2); padding:28px; margin-top:8px; animation: slideDown 0.3s ease;">
+    <div id="arch-detail-content"></div>
+  </div>
+
+  <hr class="rule">
+  <div class="two-col">
+    <div>
+      <h3>Training Mechanics</h3>
+      <div class="formula">
+        <span class="comment">// Forward pass: compute predictions</span><br>
+        ŷ = f(X; θ)<br><br>
+        <span class="comment">// Loss: measure error</span><br>
+        L = CrossEntropy(y, ŷ)<br><br>
+        <span class="comment">// Backprop: chain rule</span><br>
+        ∂L/∂θ = ∂L/∂ŷ · ∂ŷ/∂θ<br><br>
+        <span class="comment">// Update: gradient descent</span><br>
+        θ ← θ − η · ∂L/∂θ
+      </div>
+    </div>
+    <div>
+      <h3>Optimizers</h3>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px; margin-top:8px;">
+        <div style="padding:14px;border:1px solid var(--border);background:var(--paper)">
+          <strong style="font-size:11px;font-family:'Fraunces',serif">SGD</strong>
+          <p style="margin:4px 0 0;font-size:10px">Mini-batch gradient descent. Noisy but generalizes well. Add momentum to smooth.</p>
+        </div>
+        <div style="padding:14px;border:1px solid var(--border);background:var(--paper)">
+          <strong style="font-size:11px;font-family:'Fraunces',serif">Adam</strong>
+          <p style="margin:4px 0 0;font-size:10px">Adaptive learning rates per parameter. RMSProp + momentum. Default choice.</p>
+        </div>
+        <div style="padding:14px;border:1px solid var(--border);background:var(--paper)">
+          <strong style="font-size:11px;font-family:'Fraunces',serif">AdamW</strong>
+          <p style="margin:4px 0 0;font-size:10px">Adam + weight decay decoupled. Better regularization. Preferred for transformers.</p>
+        </div>
+        <div style="padding:14px;border:1px solid var(--border);background:var(--paper)">
+          <strong style="font-size:11px;font-family:'Fraunces',serif">Cosine LR</strong>
+          <p style="margin:4px 0 0;font-size:10px">Learning rate schedule. Warm up then cosine decay. Standard for large model training.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ COMPUTER VISION ══════ -->
+<div class="content-section" id="cv">
+  <div class="section-header">
+    <div class="section-num">03</div>
+    <div>
+      <div class="section-title">Computer Vision</div>
+      <p class="section-desc">Teaching machines to see. From pixel arrays to semantic understanding.</p>
+    </div>
+  </div>
+  <div class="tag tag-r">Visual Intelligence</div>
+
+  <div class="cv-task-grid">
+    <div class="cv-task" onclick="expandCV(this,'Classification','cat or dog?','Given an image, output a class label. The foundational task. AlexNet (2012) was a turning point — 25% → 16% top-5 error on ImageNet. Modern: ViT, EfficientNet, ConvNeXt.','#c84b2f')">
+      <div class="cv-task-name">Image Classification</div>
+      <div class="cv-task-ex">e.g. "this is a cat"</div>
+      <div class="cv-task-desc">Assign a single label to an entire image. The task that started the deep learning revolution.</div>
+    </div>
+    <div class="cv-task" onclick="expandCV(this,'Object Detection','where and what?','Localize and classify multiple objects in an image. Output: bounding boxes + labels + confidence. YOLO (2015): real-time detection in a single pass. Faster R-CNN: region proposals for accuracy. DETR: transformer-based end-to-end.','#2a6496')">
+      <div class="cv-task-name">Object Detection</div>
+      <div class="cv-task-ex">e.g. bounding boxes on cars</div>
+      <div class="cv-task-desc">Locate and identify multiple objects simultaneously. YOLO, Faster R-CNN, DETR.</div>
+    </div>
+    <div class="cv-task" onclick="expandCV(this,'Segmentation','pixel-perfect understanding','Semantic: assign each pixel a class. Instance: distinguish individual objects. Panoptic: both. SAM (Segment Anything) from Meta can zero-shot segment anything with a click.','#4a7c59')">
+      <div class="cv-task-name">Segmentation</div>
+      <div class="cv-task-ex">e.g. outline every pedestrian</div>
+      <div class="cv-task-desc">Classify every pixel. Semantic (what class) or instance (which individual object). SAM, Mask R-CNN.</div>
+    </div>
+    <div class="cv-task" onclick="expandCV(this,'Depth Estimation','inferring 3D from 2D','Predict per-pixel depth from a single or stereo image. Used in autonomous driving and AR. Monocular depth from DPT (Dense Prediction Transformer) using self-supervised learning on video.','#b8943c')">
+      <div class="cv-task-name">Depth Estimation</div>
+      <div class="cv-task-ex">e.g. lidar-free 3D sensing</div>
+      <div class="cv-task-desc">Infer distance from camera to each pixel. Monocular or stereo. Key for autonomous vehicles.</div>
+    </div>
+    <div class="cv-task" onclick="expandCV(this,'Image Generation','pixels from imagination','Given text or noise, synthesize realistic images. Diffusion models (Stable Diffusion, DALL·E 3) use iterative denoising from Gaussian noise conditioned on text embeddings.','#c84b2f')">
+      <div class="cv-task-name">Image Generation</div>
+      <div class="cv-task-ex">e.g. text-to-image</div>
+      <div class="cv-task-desc">Create photorealistic images from text, sketches, or noise. GANs → Diffusion models.</div>
+    </div>
+    <div class="cv-task" onclick="expandCV(this,'Pose Estimation','understanding body and motion','Predict 2D/3D keypoints of human body joints. Used in sports analytics, AR, medical. OpenPose, MediaPipe, Sapiens (Meta). Extends to hand and face landmarks.','#2a6496')">
+      <div class="cv-task-name">Pose Estimation</div>
+      <div class="cv-task-ex">e.g. skeleton tracking</div>
+      <div class="cv-task-desc">Detect body keypoints (joints, face landmarks). OpenPose, MediaPipe, ViTPose.</div>
+    </div>
+  </div>
+  <div id="cv-detail" style="display:none; background:var(--paper2); border-left:6px solid var(--accent); padding:24px 28px; animation: slideDown 0.3s ease;">
+    <h4 id="cv-d-title" style="font-family:'Fraunces',serif; font-size:20px; margin-bottom:4px;"></h4>
+    <div style="font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); margin-bottom:12px;" id="cv-d-sub"></div>
+    <p id="cv-d-text" style="font-size:12px; line-height:1.8;"></p>
+  </div>
+</div>
+
+<!-- ══════ NLP ══════ -->
+<div class="content-section" id="nlp">
+  <div class="section-header">
+    <div class="section-num">04</div>
+    <div>
+      <div class="section-title">Natural Language Processing</div>
+      <p class="section-desc">From symbolic rule-based systems to 100B-parameter transformers that speak every language.</p>
+    </div>
+  </div>
+  <div class="tag tag-g">Language Understanding & Generation</div>
+
+  <div class="two-col">
+    <div>
+      <h3>The NLP Stack</h3>
+      <div style="border:1px solid var(--border);">
+        <div style="padding:14px 20px; border-bottom:1px solid var(--border); background:rgba(200,75,47,0.05);">
+          <strong style="font-family:'Fraunces',serif; font-size:13px">Tokenization</strong>
+          <p style="margin:4px 0 0;font-size:11px">Split text into subword units (BPE, WordPiece, SentencePiece). Balance vocabulary size vs coverage.</p>
+        </div>
+        <div style="padding:14px 20px; border-bottom:1px solid var(--border); background:rgba(42,100,150,0.05);">
+          <strong style="font-family:'Fraunces',serif; font-size:13px">Embeddings</strong>
+          <p style="margin:4px 0 0;font-size:11px">Map token IDs to dense vectors. Word2Vec, GloVe (static) → BERT, GPT (contextual).</p>
+        </div>
+        <div style="padding:14px 20px; border-bottom:1px solid var(--border); background:rgba(74,124,89,0.05);">
+          <strong style="font-family:'Fraunces',serif; font-size:13px">Encoding (BERT style)</strong>
+          <p style="margin:4px 0 0;font-size:11px">Bidirectional attention. Sees full context. Great for classification, NER, Q&A.</p>
+        </div>
+        <div style="padding:14px 20px; border-bottom:1px solid var(--border); background:rgba(184,148,60,0.05);">
+          <strong style="font-family:'Fraunces',serif; font-size:13px">Decoding (GPT style)</strong>
+          <p style="margin:4px 0 0;font-size:11px">Causal (left-to-right) attention. Autoregressive generation token by token.</p>
+        </div>
+        <div style="padding:14px 20px; background:rgba(200,75,47,0.05);">
+          <strong style="font-family:'Fraunces',serif; font-size:13px">Fine-tuning & RLHF</strong>
+          <p style="margin:4px 0 0;font-size:11px">Adapt pretrained model to task. RLHF aligns with human preferences via reward model.</p>
+        </div>
+      </div>
+    </div>
+    <div>
+      <h3>Word Embedding Analogy Explorer</h3>
+      <p>The classic demo: words as vectors. Select words to see relationships:</p>
+      <div class="nlp-embed-demo">
+        <div class="embed-words">
+          <div class="embed-word" onclick="embedClick(this,'King')">King</div>
+          <div class="embed-word" onclick="embedClick(this,'Queen')">Queen</div>
+          <div class="embed-word" onclick="embedClick(this,'Man')">Man</div>
+          <div class="embed-word" onclick="embedClick(this,'Woman')">Woman</div>
+          <div class="embed-word" onclick="embedClick(this,'Paris')">Paris</div>
+          <div class="embed-word" onclick="embedClick(this,'France')">France</div>
+          <div class="embed-word" onclick="embedClick(this,'Berlin')">Berlin</div>
+          <div class="embed-word" onclick="embedClick(this,'Germany')">Germany</div>
+          <div class="embed-word" onclick="embedClick(this,'Cat')">Cat</div>
+          <div class="embed-word" onclick="embedClick(this,'Dog')">Dog</div>
+        </div>
+        <div class="embed-result" id="embed-result">Select two words to see their relationship in vector space...</div>
+      </div>
+
+      <hr class="rule">
+      <h3>NLP Tasks</h3>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:12px;">
+        <div style="padding:12px; border:1px solid var(--border); background:var(--paper); font-size:11px;"><strong style="font-family:'Fraunces',serif">Sentiment Analysis</strong><p style="margin:4px 0 0">Positive / negative / neutral. Reviews, social media.</p></div>
+        <div style="padding:12px; border:1px solid var(--border); background:var(--paper); font-size:11px;"><strong style="font-family:'Fraunces',serif">Named Entity Recognition</strong><p style="margin:4px 0 0">Extract people, places, orgs from text.</p></div>
+        <div style="padding:12px; border:1px solid var(--border); background:var(--paper); font-size:11px;"><strong style="font-family:'Fraunces',serif">Machine Translation</strong><p style="margin:4px 0 0">Sequence-to-sequence with attention. Google Translate.</p></div>
+        <div style="padding:12px; border:1px solid var(--border); background:var(--paper); font-size:11px;"><strong style="font-family:'Fraunces',serif">Question Answering</strong><p style="margin:4px 0 0">Extract or generate answers from context passages.</p></div>
+        <div style="padding:12px; border:1px solid var(--border); background:var(--paper); font-size:11px;"><strong style="font-family:'Fraunces',serif">Summarization</strong><p style="margin:4px 0 0">Extractive (copy) or abstractive (rewrite) summaries.</p></div>
+        <div style="padding:12px; border:1px solid var(--border); background:var(--paper); font-size:11px;"><strong style="font-family:'Fraunces',serif">RAG</strong><p style="margin:4px 0 0">Retrieval-Augmented Generation. Ground LLM in real docs.</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ REINFORCEMENT LEARNING ══════ -->
+<div class="content-section" id="rl">
+  <div class="section-header">
+    <div class="section-num">05</div>
+    <div>
+      <div class="section-title">Reinforcement Learning</div>
+      <p class="section-desc">Agents that learn by interacting with environments, maximizing cumulative reward.</p>
+    </div>
+  </div>
+  <div class="tag tag-d">Trial, Error & Reward</div>
+
+  <div class="two-col">
+    <div>
+      <h3>Core Concepts</h3>
+      <div style="border:1px solid var(--border); margin:20px 0;">
+        <div style="padding:14px 20px; border-bottom:1px solid var(--border);">
+          <strong style="font-family:'Fraunces',serif">Agent</strong>
+          <p style="margin:4px 0 0; font-size:11px">The learner. Observes state, takes action, receives reward. Tries to maximize total reward.</p>
+        </div>
+        <div style="padding:14px 20px; border-bottom:1px solid var(--border);">
+          <strong style="font-family:'Fraunces',serif">Environment</strong>
+          <p style="margin:4px 0 0; font-size:11px">Everything outside the agent. Returns next state and reward given action.</p>
+        </div>
+        <div style="padding:14px 20px; border-bottom:1px solid var(--border);">
+          <strong style="font-family:'Fraunces',serif">Policy π(a|s)</strong>
+          <p style="margin:4px 0 0; font-size:11px">The agent's strategy. Maps state → probability distribution over actions.</p>
+        </div>
+        <div style="padding:14px 20px; border-bottom:1px solid var(--border);">
+          <strong style="font-family:'Fraunces',serif">Value Function V(s)</strong>
+          <p style="margin:4px 0 0; font-size:11px">Expected cumulative reward from state s. Tells the agent how good a state is.</p>
+        </div>
+        <div style="padding:14px 20px;">
+          <strong style="font-family:'Fraunces',serif">Q-Function Q(s,a)</strong>
+          <p style="margin:4px 0 0; font-size:11px">Expected reward from taking action a in state s. DeepMind's DQN used this to beat Atari.</p>
+        </div>
+      </div>
+
+      <div class="formula">
+        <span class="comment">// Bellman Equation</span><br>
+        Q(s,a) = r + γ · max Q(s',a')<br><br>
+        <span class="comment">// γ = discount factor (0–1)</span><br>
+        <span class="comment">// future rewards worth less than immediate</span>
+      </div>
+    </div>
+    <div>
+      <h3>Gridworld — Watch an Agent Learn</h3>
+      <p>Green = goal (+10), Red = obstacle (-5). Click <strong>Step</strong> to move the agent randomly, <strong>Auto Run</strong> to simulate episodes.</p>
+      <div class="rl-controls-row">
+        <button class="bv-btn" onclick="rlStep()">Step</button>
+        <button class="bv-btn" onclick="rlRun()">Auto Run</button>
+        <button class="bv-btn" onclick="rlReset()">Reset</button>
+      </div>
+      <div id="rl-grid"></div>
+      <div id="rl-info"></div>
+      <div>Reward: <span id="rl-reward" style="font-family:'Fraunces',serif; font-size:22px; font-weight:700;">0</span></div>
+
+      <hr class="rule">
+      <h3>Algorithm Families</h3>
+      <div style="display:grid; gap:8px; margin-top:12px;">
+        <div style="padding:12px 16px; border:1px solid var(--border); background:var(--paper); font-size:11px; border-left:3px solid var(--accent);">
+          <strong style="font-family:'Fraunces',serif">Model-Free Value-Based</strong> — Q-learning, DQN, Double DQN. Learn Q values directly from experience.
+        </div>
+        <div style="padding:12px 16px; border:1px solid var(--border); background:var(--paper); font-size:11px; border-left:3px solid var(--accent2);">
+          <strong style="font-family:'Fraunces',serif">Policy Gradient</strong> — REINFORCE, PPO, TRPO. Directly optimize the policy. PPO is standard for LLM alignment (RLHF).
+        </div>
+        <div style="padding:12px 16px; border:1px solid var(--border); background:var(--paper); font-size:11px; border-left:3px solid var(--accent3);">
+          <strong style="font-family:'Fraunces',serif">Actor-Critic</strong> — A3C, SAC, TD3. Combine value estimation + policy gradient. Best of both worlds.
+        </div>
+        <div style="padding:12px 16px; border:1px solid var(--border); background:var(--paper); font-size:11px; border-left:3px solid var(--gold);">
+          <strong style="font-family:'Fraunces',serif">Model-Based</strong> — Learn a world model, plan within it. AlphaZero (chess, Go), Dreamer, MuZero.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ GENERATIVE AI ══════ -->
+<div class="content-section" id="gen">
+  <div class="section-header">
+    <div class="section-num">06</div>
+    <div>
+      <div class="section-title">Generative AI</div>
+      <p class="section-desc">Models that create. Text, images, audio, video, code, 3D — all from learned data distributions.</p>
+    </div>
+  </div>
+  <div class="tag tag-b">The Creative Machines</div>
+
+  <div class="gen-types">
+    <div class="gen-card" onclick="showGen(this,'GAN','Generator tries to fool Discriminator into thinking fake data is real. Discriminator tries to catch fakes. Adversarial game converges to realistic outputs. Applications: DeepFakes, StyleGAN (faces), CycleGAN (style transfer). Hard to train — mode collapse and instability are common.','⚔️')">
+      <div class="gen-icon">⚔️</div>
+      <div class="gen-name">GANs</div>
+      <div class="gen-desc">Generator vs Discriminator adversarial game. StyleGAN, CycleGAN.</div>
+    </div>
+    <div class="gen-card" onclick="showGen(this,'Diffusion Models','Start with pure Gaussian noise. Iteratively denoise using a U-Net conditioned on text (via CLIP embeddings). During training: gradually add noise to images and learn to predict the noise. At inference: start from noise, run 20–1000 denoising steps. Behind Stable Diffusion, DALL·E 3, Midjourney, Sora (video).','🌊')">
+      <div class="gen-icon">🌊</div>
+      <div class="gen-name">Diffusion Models</div>
+      <div class="gen-desc">Iterative denoising from noise. DALL·E 3, Stable Diffusion, Sora.</div>
+    </div>
+    <div class="gen-card" onclick="showGen(this,'VAE (Variational Autoencoder)','Encoder maps input to a latent distribution (mean + variance). Decoder reconstructs from a sample. KL divergence loss ensures the latent space is smooth and continuous. Enables interpolation, generation, and disentanglement. Foundation of Stable Diffusion\'s latent space.','🔭')">
+      <div class="gen-icon">🔭</div>
+      <div class="gen-name">VAEs</div>
+      <div class="gen-desc">Encode to latent distribution. Smooth latent space for generation and interpolation.</div>
+    </div>
+    <div class="gen-card" onclick="showGen(this,'LLMs (Autoregressive)','Predict the next token given all previous tokens. Trained on vast text corpora. Scale (parameters, data, compute) unlocks emergent capabilities: few-shot learning, reasoning, code generation. GPT-4, Claude, Gemini, LLaMA.','💬')">
+      <div class="gen-icon">💬</div>
+      <div class="gen-name">LLMs</div>
+      <div class="gen-desc">Next-token prediction at scale. GPT-4, Claude, Gemini, LLaMA.</div>
+    </div>
+    <div class="gen-card" onclick="showGen(this,'Flow Models','Learn invertible transformations that map simple distributions (Gaussian) to complex data distributions. Exact likelihood computation. Normalizing flows (RealNVP, Glow) for images; flow matching for audio (Voicebox).','🌀')">
+      <div class="gen-icon">🌀</div>
+      <div class="gen-name">Flow Models</div>
+      <div class="gen-desc">Invertible transformations. Exact likelihood. RealNVP, Glow.</div>
+    </div>
+    <div class="gen-card" onclick="showGen(this,'Multimodal Models','Single model that understands and generates across text, images, audio, video. Vision-language models (GPT-4V, Gemini, LLaVA) take image + text input and respond in text. Full multimodal (GPT-4o, Gemini Ultra) can see, hear, and speak.','🌐')">
+      <div class="gen-icon">🌐</div>
+      <div class="gen-name">Multimodal</div>
+      <div class="gen-desc">Text + vision + audio unified. GPT-4V, Gemini, LLaVA, CLIP.</div>
+    </div>
+    <div class="gen-card" onclick="showGen(this,'Audio & Music Generation','WaveNet: autoregressive waveform synthesis. Diffusion for audio: AudioLDM, MusicLM, Suno. Codec-based: compress audio to discrete tokens, then generate tokens autoregressively (like LLMs). Voice cloning: XTTS, ElevenLabs.','🎵')">
+      <div class="gen-icon">🎵</div>
+      <div class="gen-name">Audio Generation</div>
+      <div class="gen-desc">Music, voice, sound FX. WaveNet, AudioLDM, MusicLM, Suno.</div>
+    </div>
+    <div class="gen-card" onclick="showGen(this,'Video Generation','Extend diffusion or transformer to spacetime. Sora (OpenAI): diffusion transformer on video patches. Gen-3 (Runway), Kling, Veo (Google). Key challenges: temporal consistency, physics coherence, long context.','🎬')">
+      <div class="gen-icon">🎬</div>
+      <div class="gen-name">Video Generation</div>
+      <div class="gen-desc">Spacetime diffusion. Sora, Gen-3, Veo, Kling.</div>
+    </div>
+  </div>
+  <div id="gen-detail" style="display:none; background:var(--paper2); border-left:6px solid var(--accent2); padding:24px 28px; animation:slideDown 0.3s ease;">
+    <h4 id="gen-d-title" style="font-family:'Fraunces',serif; font-size:20px; margin-bottom:12px;"></h4>
+    <p id="gen-d-text" style="font-size:12px; line-height:1.8; color:var(--muted);"></p>
+  </div>
+</div>
+
+<!-- ══════ ROBOTICS ══════ -->
+<div class="content-section" id="robotics">
+  <div class="section-header">
+    <div class="section-num">07</div>
+    <div>
+      <div class="section-title">Robotics & Embodied AI</div>
+      <p class="section-desc">Intelligence that acts in the physical world. The hardest AI problem.</p>
+    </div>
+  </div>
+  <div class="tag tag-g">Physical Intelligence</div>
+
+  <p>Click any layer of the robotics stack:</p>
+  <div class="robot-stack">
+    <div class="stack-layer" onclick="expandStack(this,'Sensing & Perception','Cameras (RGB, depth, fisheye), LiDAR (point clouds), IMU (acceleration, rotation), tactile sensors, GPS. Raw sensor fusion into a coherent world representation. Key challenge: real-time processing at high frequency (100–1000Hz).')">
+      <div class="stack-level" style="color:var(--paper3)">07</div>
+      <div>
+        <div class="stack-name">Sensing & Perception</div>
+        <div class="stack-desc">Cameras, LiDAR, IMU, tactile sensors. Fusing raw data into world understanding.</div>
+      </div>
+    </div>
+    <div class="stack-layer" onclick="expandStack(this,'Localization & Mapping (SLAM)','Simultaneous Localization And Mapping. Where am I? What does the environment look like? Visual SLAM uses camera + IMU. LiDAR SLAM uses point clouds. Output: occupancy map + robot pose. NeRF-based and Gaussian splatting approaches emerging for richer maps.')">
+      <div class="stack-level" style="color:var(--paper3)">06</div>
+      <div>
+        <div class="stack-name">Localization & Mapping (SLAM)</div>
+        <div class="stack-desc">Simultaneous Localization And Mapping. Building a map while knowing where you are in it.</div>
+      </div>
+    </div>
+    <div class="stack-layer" onclick="expandStack(this,'Path Planning','Given current state and goal, find a collision-free path. Classical: A*, RRT (Rapidly-exploring Random Trees), Dijkstra. Learned: imitation learning from demonstrations, RL for adaptive replanning. Hierarchical planning: high-level task decomposition + low-level motion planning.')">
+      <div class="stack-level" style="color:var(--paper3)">05</div>
+      <div>
+        <div class="stack-name">Path Planning</div>
+        <div class="stack-desc">Finding collision-free trajectories. A*, RRT, and learned planners.</div>
+      </div>
+    </div>
+    <div class="stack-layer" onclick="expandStack(this,'Control & Actuation','Convert high-level commands to joint torques / motor voltages. PID controllers (classical), model predictive control (MPC), trajectory optimization. Learning-based: impedance control, compliance for safe human interaction. Key: high-frequency, real-time, safe.')">
+      <div class="stack-level" style="color:var(--paper3)">04</div>
+      <div>
+        <div class="stack-name">Control & Actuation</div>
+        <div class="stack-desc">PID, MPC, RL-based control. Converting plans to motor torques.</div>
+      </div>
+    </div>
+    <div class="stack-layer" onclick="expandStack(this,'Manipulation','Grasping and manipulating objects in the unstructured world. Dexterous manipulation with multi-fingered hands remains unsolved. Key advances: diffusion policy for behavior cloning, RT-2 (robot transformer combining vision + language + action), ACT (Action Chunking Transformer).')">
+      <div class="stack-level" style="color:var(--paper3)">03</div>
+      <div>
+        <div class="stack-name">Manipulation</div>
+        <div class="stack-desc">Grasping, dexterous hands, deformable objects. Hardest robotics challenge.</div>
+      </div>
+    </div>
+    <div class="stack-layer" onclick="expandStack(this,'Task & Motion Planning','High-level reasoning: "make coffee" → boil water → find mug → pour. Combine symbolic AI (STRIPS, PDDL) with learned models. VLMs as robot brains: SayCan (Google), RT-2, PaLM-E interpret natural language instructions and decompose into executable actions.')">
+      <div class="stack-level" style="color:var(--paper3)">02</div>
+      <div>
+        <div class="stack-name">Task & Motion Planning</div>
+        <div class="stack-desc">High-level symbolic reasoning meets physical constraints. Language→actions.</div>
+      </div>
+    </div>
+    <div class="stack-layer" onclick="expandStack(this,'Foundation Models for Robotics','The frontier: large pretrained models (vision + language + action) that generalize to new tasks with few demonstrations. RT-2, OpenVLA, π0. Sim2Real: train in simulation, deploy in reality. World models that simulate physics for planning.')">
+      <div class="stack-level" style="color:var(--accent)">01</div>
+      <div>
+        <div class="stack-name">Foundation Models for Robotics</div>
+        <div class="stack-desc">RT-2, π0, OpenVLA. Large pretrained models that generalize to unseen tasks.</div>
+      </div>
+    </div>
+  </div>
+  <div id="stack-detail" style="display:none; background:var(--paper2); border-left:6px solid var(--accent3); padding:24px 28px; margin-top:0; animation:slideDown 0.3s ease;">
+    <h4 id="stack-d-title" style="font-family:'Fraunces',serif; font-size:20px; margin-bottom:10px;"></h4>
+    <p id="stack-d-text" style="font-size:12px; line-height:1.8; color:var(--muted);"></p>
+  </div>
+</div>
+
+<!-- ══════ AI SAFETY ══════ -->
+<div class="content-section" id="safety">
+  <div class="section-header">
+    <div class="section-num">08</div>
+    <div>
+      <div class="section-title">AI Safety & Alignment</div>
+      <p class="section-desc">Ensuring powerful AI systems remain beneficial, controllable, and aligned with human values.</p>
+    </div>
+  </div>
+  <div class="tag tag-r">The Most Important Problem</div>
+
+  <div class="safety-grid">
+    <div class="safety-card" style="border-color:var(--accent)">
+      <h4>Alignment Problem</h4>
+      <p>How do we ensure an AI system pursues the goals we actually want, not a misspecified proxy? Goodhart's Law: when a measure becomes a target, it ceases to be a good measure. Reward hacking, specification gaming.</p>
+    </div>
+    <div class="safety-card" style="border-color:var(--accent2)">
+      <h4>RLHF & Constitutional AI</h4>
+      <p>Reinforcement Learning from Human Feedback: collect human preferences, train reward model, fine-tune with PPO. Constitutional AI (Anthropic): model critiques its own outputs against a set of principles.</p>
+    </div>
+    <div class="safety-card" style="border-color:var(--accent3)">
+      <h4>Interpretability</h4>
+      <p>Mechanistic interpretability: understand what computations a neural network performs. Circuits, superposition, polysemanticity. If we can read the model's "thoughts," we can check for misalignment.</p>
+    </div>
+    <div class="safety-card" style="border-color:var(--gold)">
+      <h4>Robustness</h4>
+      <p>Adversarial attacks: tiny input perturbations cause misclassification. Distribution shift: model trained in one environment fails in another. Out-of-distribution detection, certified defenses.</p>
+    </div>
+    <div class="safety-card" style="border-color:var(--accent)">
+      <h4>Scalable Oversight</h4>
+      <p>As AI becomes smarter, humans can't evaluate every output. Debate (AI argues for an answer, human judges the argument), recursive reward modeling, weak-to-strong generalization.</p>
+    </div>
+    <div class="safety-card" style="border-color:var(--accent2)">
+      <h4>Catastrophic Risk</h4>
+      <p>Long-term concerns: power-seeking AI, deceptive alignment (AI appears aligned during training but not deployment), loss of human control. Organizations: Anthropic, ARC, MIRI, DeepMind Safety.</p>
+    </div>
+  </div>
+
+  <div class="pull-quote">The goal is not to prevent AI from being <span>powerful</span>, but to ensure that power is <span>aligned</span> with what we care about.</div>
+</div>
+
+<!-- ══════ MLOPS ══════ -->
+<div class="content-section" id="mlops">
+  <div class="section-header">
+    <div class="section-num">09</div>
+    <div>
+      <div class="section-title">MLOps</div>
+      <p class="section-desc">The engineering discipline of getting ML models from experiment to production — and keeping them there.</p>
+    </div>
+  </div>
+  <div class="tag tag-d">From Notebook to Production</div>
+
+  <p>Click any stage of the ML pipeline:</p>
+  <div class="pipeline-flow">
+    <div class="pipe-stage" onclick="showPipe('data','Data Engineering','Data pipelines, ETL, feature stores. Garbage in = garbage out. Data versioning (DVC), labeling (Label Studio, Scale AI), data cards, dataset documentation.')">
+      <div class="pipe-icon">📥</div>
+      <div class="pipe-name">Data</div>
+      <div class="pipe-desc">Collection, cleaning, labeling, versioning</div>
+    </div>
+    <div class="pipe-stage" onclick="showPipe('features','Feature Engineering','Transform raw data into ML-ready features. Normalization, encoding categoricals, time-based features. Feature stores (Feast, Tecton) share features across teams. Feature drift = silent model degradation.')">
+      <div class="pipe-icon">🔧</div>
+      <div class="pipe-name">Features</div>
+      <div class="pipe-desc">Transform, normalize, select</div>
+    </div>
+    <div class="pipe-stage" onclick="showPipe('train','Training','Experiment tracking (MLflow, W&B). Hyperparameter tuning (Optuna, Ray Tune). Distributed training (PyTorch DDP, DeepSpeed, FSDP). Compute: cloud GPUs, TPUs.')">
+      <div class="pipe-icon">🏋️</div>
+      <div class="pipe-name">Training</div>
+      <div class="pipe-desc">Experiment tracking, HPO, distributed</div>
+    </div>
+    <div class="pipe-stage" onclick="showPipe('eval','Evaluation','Offline: metrics on held-out test set. Online: A/B testing, shadow mode, canary deployments. Slice analysis: performance on subgroups. Red-teaming for LLMs.')">
+      <div class="pipe-icon">📊</div>
+      <div class="pipe-name">Evaluation</div>
+      <div class="pipe-desc">Offline metrics, A/B testing, slices</div>
+    </div>
+    <div class="pipe-stage" onclick="showPipe('deploy','Deployment','Model serialization (ONNX, TorchScript). Inference servers (Triton, TorchServe, vLLM for LLMs). Containerization (Docker, Kubernetes). Latency vs throughput tradeoffs. Quantization + pruning to reduce cost.')">
+      <div class="pipe-icon">🚀</div>
+      <div class="pipe-name">Deployment</div>
+      <div class="pipe-desc">Serving, containers, latency</div>
+    </div>
+    <div class="pipe-stage" onclick="showPipe('monitor','Monitoring','Data drift, model drift, prediction drift. Alerting pipelines. Feedback loops: collect labels from production to retrain. Observability: logging, tracing, dashboards (Grafana, Evidently).')">
+      <div class="pipe-icon">📡</div>
+      <div class="pipe-name">Monitoring</div>
+      <div class="pipe-desc">Drift detection, alerting, retraining</div>
+    </div>
+  </div>
+  <div id="pipe-detail">
+    <strong id="pipe-d-title" style="font-family:'Fraunces',serif; font-size:15px; display:block; margin-bottom:8px;"></strong>
+    <span id="pipe-d-text"></span>
+  </div>
+</div>
+
+<!-- ══════ ETHICS ══════ -->
+<div class="content-section" id="ethics">
+  <div class="section-header">
+    <div class="section-num">10</div>
+    <div>
+      <div class="section-title">Ethics & Governance</div>
+      <p class="section-desc">The social, legal, and moral dimensions of AI deployment at scale.</p>
+    </div>
+  </div>
+  <div class="tag tag-b">Responsible AI</div>
+
+  <div class="ethics-dial">
+    <div class="dial-card">
+      <div class="dial-label">Fairness</div>
+      <div class="dial-ring" style="border-color:var(--accent); color:var(--accent)" onclick="showEthics('fairness')">⚖️</div>
+      <div class="dial-desc">Demographic parity, equalized odds, individual fairness. Impossibility theorems between metrics.</div>
+    </div>
+    <div class="dial-card">
+      <div class="dial-label">Transparency</div>
+      <div class="dial-ring" style="border-color:var(--accent2); color:var(--accent2)" onclick="showEthics('transparency')">🔍</div>
+      <div class="dial-desc">Explainable AI (XAI). LIME, SHAP, attention maps. Right to explanation (GDPR).</div>
+    </div>
+    <div class="dial-card">
+      <div class="dial-label">Privacy</div>
+      <div class="dial-ring" style="border-color:var(--accent3); color:var(--accent3)" onclick="showEthics('privacy')">🔒</div>
+      <div class="dial-desc">Federated learning, differential privacy, data minimization. GDPR, CCPA.</div>
+    </div>
+    <div class="dial-card">
+      <div class="dial-label">Accountability</div>
+      <div class="dial-ring" style="border-color:var(--gold); color:var(--gold)" onclick="showEthics('accountability')">📋</div>
+      <div class="dial-desc">Who is responsible when AI harms? Audit trails, model cards, datasheets.</div>
+    </div>
+  </div>
+  <div id="ethics-detail" style="display:none; background:var(--paper2); border-left:6px solid var(--accent2); padding:24px 28px; margin:0 0 24px; animation:slideDown 0.3s ease;">
+    <h4 id="ethics-d-title" style="font-family:'Fraunces',serif;font-size:18px;margin-bottom:10px;"></h4>
+    <p id="ethics-d-text" style="font-size:12px;line-height:1.8;color:var(--muted);"></p>
+  </div>
+
+  <div class="two-col">
+    <div>
+      <h3>Key Regulations</h3>
+      <div style="display:grid; gap:8px; margin-top:12px;">
+        <div style="padding:14px 18px; border:1px solid var(--border); background:var(--paper); font-size:11px;">
+          <strong style="font-family:'Fraunces',serif">EU AI Act (2024)</strong>
+          <p style="margin:4px 0 0">Risk-based regulation. Prohibited uses (social scoring), high-risk (medical, hiring), limited risk (chatbots must disclose), minimal risk.</p>
+        </div>
+        <div style="padding:14px 18px; border:1px solid var(--border); background:var(--paper); font-size:11px;">
+          <strong style="font-family:'Fraunces',serif">GDPR</strong>
+          <p style="margin:4px 0 0">Right to explanation for automated decisions. Data minimization. Consent requirements. Right to erasure.</p>
+        </div>
+        <div style="padding:14px 18px; border:1px solid var(--border); background:var(--paper); font-size:11px;">
+          <strong style="font-family:'Fraunces',serif">US Executive Order on AI (2023)</strong>
+          <p style="margin:4px 0 0">Safety evaluations for frontier models, NIST AI Risk Management Framework, federal agency AI policies.</p>
+        </div>
+      </div>
+    </div>
+    <div>
+      <h3>Bias in AI Systems</h3>
+      <p>Bias enters at every stage of the pipeline:</p>
+      <div style="display:grid; gap:8px; margin-top:12px;">
+        <div style="padding:12px 16px; border:1px solid var(--border); background:var(--paper); font-size:11px; border-left:3px solid var(--accent);">
+          <strong>Data bias</strong> — Training data reflects historical inequalities. COMPAS recidivism, facial recognition across demographics.
+        </div>
+        <div style="padding:12px 16px; border:1px solid var(--border); background:var(--paper); font-size:11px; border-left:3px solid var(--accent2);">
+          <strong>Measurement bias</strong> — Proxy metrics don't capture what matters. Hiring algorithms trained on biased hiring history.
+        </div>
+        <div style="padding:12px 16px; border:1px solid var(--border); background:var(--paper); font-size:11px; border-left:3px solid var(--accent3);">
+          <strong>Deployment bias</strong> — Model used in contexts different from training. Feedback loops amplify initial biases.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div style="background:var(--ink); color:var(--paper2); padding:40px 80px; text-align:center; border-top:3px solid var(--accent);">
+  <div style="font-family:'Fraunces',serif; font-size:24px; font-weight:700; margin-bottom:8px; font-style:italic;">The AI Landscape</div>
+  <div style="font-size:10px; color:#4a4030; letter-spacing:0.15em; text-transform:uppercase;">A living document · Built with curiosity</div>
+</div>
+
+</div><!-- end #main -->
+
+<script>
+// ── NAV SCROLL ──
+function scrollTo(id) {
+  document.getElementById(id).scrollIntoView({ behavior: 'smooth', block: 'start' });
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+}
+
+// Intersection Observer for nav highlight
+const sections = ['overview','ml','dl','cv','nlp','rl','gen','robotics','safety','mlops','ethics'];
+const navItems = document.querySelectorAll('.nav-item');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      const idx = sections.indexOf(e.target.id);
+      navItems.forEach(n => n.classList.remove('active'));
+      if (idx >= 0 && navItems[idx + 1]) navItems[idx + 1].classList.add('active');
+    }
+  });
+}, { rootMargin: '-40% 0px -55% 0px' });
+sections.forEach(id => { const el = document.getElementById(id); if(el) observer.observe(el); });
+
+// ── UMBRELLA PANEL ──
+const umbrellaData = [
+  { title: 'Machine Learning', desc: 'The science of getting computers to learn without being explicitly programmed.', items: ['Supervised: classification, regression', 'Unsupervised: clustering, dimensionality reduction', 'Semi-supervised and self-supervised', 'Transfer learning and fine-tuning', 'Key algorithms: Linear models, trees, SVMs, boosting'] },
+  { title: 'Deep Learning', desc: 'Multi-layer neural networks that learn hierarchical feature representations.', items: ['Feedforward / MLP networks', 'Convolutional Neural Networks (CNN)', 'Recurrent networks (RNN, LSTM, GRU)', 'Transformers and attention mechanisms', 'Generative models (GAN, VAE, Diffusion)'] },
+  { title: 'Computer Vision', desc: 'Teaching machines to interpret and understand visual information.', items: ['Image classification and recognition', 'Object detection (YOLO, DETR)', 'Semantic and instance segmentation', 'Video understanding', 'Generative: text-to-image, super-resolution'] },
+  { title: 'NLP', desc: 'Processing, understanding, and generating human language.', items: ['Tokenization and embeddings', 'Language modeling and LLMs', 'Translation, summarization, Q&A', 'RAG and vector databases', 'Agents and tool use'] },
+  { title: 'Reinforcement Learning', desc: 'Learning through interaction with an environment by maximizing reward.', items: ['Value-based: Q-learning, DQN', 'Policy gradient: PPO, REINFORCE', 'Actor-Critic: SAC, A3C', 'Model-based: AlphaZero, MuZero', 'RLHF for LLM alignment'] },
+  { title: 'Generative AI', desc: 'Models that generate new content — images, text, audio, video, code.', items: ['GANs: adversarial image synthesis', 'Diffusion: Stable Diffusion, DALL·E', 'LLMs: GPT, Claude, Gemini', 'Audio: WaveNet, MusicLM', 'Video: Sora, Runway Gen-3'] },
+  { title: 'Robotics & Embodied AI', desc: 'AI that perceives and acts in the physical world.', items: ['Perception: vision, LiDAR, tactile', 'SLAM: mapping and localization', 'Motion planning and control', 'Manipulation and grasping', 'Foundation models: RT-2, π0'] },
+  { title: 'AI Safety & Alignment', desc: 'Ensuring AI systems remain safe, beneficial, and under human control.', items: ['Alignment: RLHF, Constitutional AI', 'Interpretability: circuits, features', 'Robustness and adversarial attacks', 'Scalable oversight techniques', 'Long-term catastrophic risk research'] },
+  { title: 'MLOps', desc: 'The engineering practice of deploying and maintaining ML systems in production.', items: ['Data pipelines and feature engineering', 'Experiment tracking (W&B, MLflow)', 'Deployment (Triton, vLLM, BentoML)', 'Monitoring and drift detection', 'CI/CD for ML, model registries'] },
+  { title: 'Ethics & Governance', desc: 'Fairness, accountability, transparency, and societal impact of AI.', items: ['Algorithmic fairness and bias', 'Explainable AI (LIME, SHAP)', 'Privacy: federated learning, DP', 'EU AI Act, GDPR, policy', 'Model cards, datasheets for datasets'] },
+];
+
+let openUmbrella = -1;
+function toggleUmbrella(i, el) {
+  const panel = document.getElementById('detail-panel');
+  const cards = document.querySelectorAll('.umbrella-card');
+  if (openUmbrella === i) {
+    panel.style.display = 'none';
+    cards.forEach(c => c.classList.remove('active'));
+    openUmbrella = -1;
+    return;
+  }
+  openUmbrella = i;
+  cards.forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  const d = umbrellaData[i];
+  panel.innerHTML = `
+    <div class="detail-title">${d.title}</div>
+    <div class="detail-tagline">${d.desc}</div>
+    <div class="detail-grid">
+      ${d.items.map(item => `<div class="detail-card"><p style="font-size:12px;margin:0">▸ ${item}</p></div>`).join('')}
+    </div>`;
+  panel.style.display = 'block';
+  panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+// ── BIAS VARIANCE ──
+const bvCanvas = document.getElementById('bv-canvas');
+const bvCtx = bvCanvas.getContext('2d');
+function initBV() {
+  bvCanvas.width = bvCanvas.offsetWidth;
+  bvCanvas.height = bvCanvas.offsetHeight;
+  drawBV('underfit', document.querySelector('.bv-btn'));
+}
+function drawBV(mode, btn) {
+  document.querySelectorAll('.bv-btn').forEach(b => b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  const W = bvCanvas.width, H = bvCanvas.height;
+  bvCtx.clearRect(0, 0, W, H);
+  // Generate noisy sine data
+  const points = Array.from({length: 16}, (_, i) => ({
+    x: (i / 15) * (W - 80) + 40,
+    y: H/2 - Math.sin(i/15 * Math.PI * 2) * (H/3) + (Math.random() - 0.5) * 30
+  }));
+  // Draw data points
+  points.forEach(p => {
+    bvCtx.beginPath();
+    bvCtx.arc(p.x, p.y, 5, 0, Math.PI * 2);
+    bvCtx.fillStyle = '#0f0e0c';
+    bvCtx.fill();
+  });
+  // Draw fit curve
+  bvCtx.beginPath();
+  bvCtx.strokeStyle = mode === 'underfit' ? '#c84b2f' : mode === 'goodfit' ? '#4a7c59' : '#2a6496';
+  bvCtx.lineWidth = 2.5;
+  if (mode === 'underfit') {
+    // Flat line (high bias)
+    const avg = points.reduce((s,p) => s + p.y, 0) / points.length;
+    bvCtx.moveTo(points[0].x, avg);
+    bvCtx.lineTo(points[points.length-1].x, avg);
+    document.getElementById('bv-caption').textContent = 'High Bias / Underfitting — model too simple, misses the pattern';
+  } else if (mode === 'goodfit') {
+    // Smooth sine
+    for (let x = 40; x <= W - 40; x += 2) {
+      const t = (x - 40) / (W - 80);
+      const y = H/2 - Math.sin(t * Math.PI * 2) * (H/3);
+      x === 40 ? bvCtx.moveTo(x, y) : bvCtx.lineTo(x, y);
+    }
+    document.getElementById('bv-caption').textContent = 'Good Fit — captures the true underlying pattern';
+  } else {
+    // Wiggly line through every point
+    bvCtx.moveTo(points[0].x, points[0].y);
+    for (let i = 1; i < points.length - 1; i++) {
+      const mx = (points[i].x + points[i+1].x) / 2;
+      const my = (points[i].y + points[i+1].y) / 2;
+      bvCtx.quadraticCurveTo(points[i].x, points[i].y, mx, my);
+    }
+    bvCtx.lineTo(points[points.length-1].x, points[points.length-1].y);
+    document.getElementById('bv-caption').textContent = 'High Variance / Overfitting — memorized training data, won\'t generalize';
+  }
+  bvCtx.stroke();
+}
+window.addEventListener('resize', initBV);
+setTimeout(initBV, 200);
+
+// ── ALGORITHM DETAIL ──
+const algoData = {
+  lr: '<strong>Linear Regression</strong>: Fit a hyperplane y = Xw + b by minimizing Mean Squared Error. Analytic solution via Normal Equations: w = (XᵀX)⁻¹Xᵀy. Or gradient descent. Assumes linearity, no multicollinearity, homoscedasticity.',
+  dt: '<strong>Decision Trees</strong>: Recursively split on features that maximize information gain (entropy reduction) or Gini impurity reduction. Greedy, not globally optimal. Prone to overfitting — prune or use ensembles.',
+  rf: '<strong>Random Forest</strong>: Train N trees, each on a bootstrapped sample of data (bagging), with a random subset of features at each split. Aggregate by voting/averaging. Reduces variance without increasing bias.',
+  svm: '<strong>SVM</strong>: Find the hyperplane that maximizes the margin between classes. Support vectors are the data points closest to the boundary. Kernel trick (RBF, polynomial) maps to higher-dimensional space for nonlinear boundaries.',
+  km: '<strong>K-Means</strong>: Initialize K centroids randomly. Assign each point to nearest centroid. Recompute centroids. Repeat until stable. Sensitive to initialization — use K-Means++ for smart starting points.',
+  xgb: '<strong>XGBoost</strong>: Gradient boosting: fit each new tree to the residuals of the ensemble. XGBoost adds regularization, second-order gradients, column/row subsampling. Wins Kaggle tabular competitions.',
+};
+function showAlgo(key) {
+  const d = document.getElementById('algo-detail');
+  d.innerHTML = algoData[key];
+  d.style.display = 'block';
+}
+
+// ── ARCH DETAIL ──
+const archData = {
+  mlp: { title: 'Feedforward / MLP', body: 'Fully connected layers. Each neuron connects to every neuron in the next layer. Works well for tabular data. The Universal Approximation Theorem guarantees it can approximate any continuous function given sufficient width. Depth enables composition of simpler functions.', formula: 'h = activation(Wh + b)' },
+  cnn: { title: 'Convolutional Neural Network', body: 'Exploit spatial structure through weight sharing. A 3×3 filter slides over the image detecting the same pattern everywhere. Multiple filters learn different features. Pooling downsamples and provides translation invariance. Deep CNNs: VGG, ResNet, EfficientNet.', formula: 'y[i,j] = Σₘₙ W[m,n]·x[i+m,j+n] + b' },
+  rnn: { title: 'RNN / LSTM / GRU', body: 'Process sequences token by token. Hidden state carries memory: h_t = tanh(W·[h_{t-1}, x_t] + b). Problem: vanishing gradients over long sequences. LSTM fixes this with input/forget/output gates. GRU is a simplified LSTM. Replaced by Transformers for most tasks.', formula: 'h_t = tanh(W_h·h_{t-1} + W_x·x_t + b)' },
+  transformer: { title: 'Transformer', body: 'Self-attention: every token attends to every other. Q, K, V projections from each token. Attention(Q,K,V) = softmax(QKᵀ/√d)·V. Multi-head: run H attention functions in parallel, concat. Add feed-forward layers + layer norm. Stack N times. Scales magnificently with compute.', formula: 'Attention(Q,K,V) = softmax(QKᵀ/√dₖ)·V' },
+  gan: { title: 'Generative Adversarial Network', body: 'Generator G maps noise z → fake data. Discriminator D classifies real vs fake. Minimax game: min_G max_D E[log D(x)] + E[log(1-D(G(z)))]. Problems: mode collapse, training instability. Modern variants: StyleGAN2, BigGAN, Conditional GAN.', formula: 'min_G max_D V(G,D) = E[log D(x)] + E[log(1-D(G(z)))]' },
+  vae: { title: 'Variational Autoencoder', body: 'Encoder outputs μ and σ (distribution parameters). Sample z ~ N(μ,σ²). Decoder reconstructs from z. Loss = reconstruction + KL divergence. The KL term ensures the latent space is smooth and continuous — enables interpolation between points.', formula: 'L = E[log p(x|z)] - KL[q(z|x)||p(z)]' },
+  diffusion: { title: 'Diffusion Model', body: 'Forward process: gradually add Gaussian noise over T steps until data becomes pure noise. Reverse process (learned): denoise step by step. U-Net predicts the noise at each step. Conditioning: text embeddings (CLIP) guide generation via classifier-free guidance. Better quality than GANs, slower inference.', formula: 'L = E[||ε - ε_θ(√ᾱ_t·x₀ + √(1-ᾱ_t)·ε, t)||²]' },
+  gnn: { title: 'Graph Neural Network', body: 'Nodes have features. Edges define relationships. Message passing: each node aggregates messages from neighbors, updates its state. Multiple rounds = larger receptive field. Applications: molecular property prediction (drug discovery), social networks, knowledge graphs, recommendation systems.', formula: 'h_v^(k) = σ(W·AGG({h_u^(k-1): u∈N(v)}))' },
+};
+function showArch(key) {
+  const d = document.getElementById('arch-detail');
+  const dc = document.getElementById('arch-detail-content');
+  const a = archData[key];
+  dc.innerHTML = `<h4 style="font-family:'Fraunces',serif;font-size:20px;margin-bottom:10px;">${a.title}</h4>
+    <p style="font-size:12px;line-height:1.8;color:var(--muted);">${a.body}</p>
+    <div class="formula" style="margin-top:12px;">${a.formula}</div>`;
+  d.style.display = 'block';
+}
+
+// ── CV DETAIL ──
+function expandCV(el, title, sub, text, color) {
+  const d = document.getElementById('cv-detail');
+  document.getElementById('cv-d-title').textContent = title;
+  document.getElementById('cv-d-sub').textContent = sub;
+  document.getElementById('cv-d-text').textContent = text;
+  d.style.borderLeftColor = color;
+  d.style.display = 'block';
+  d.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+// ── EMBED DEMO ──
+const embedRelations = {
+  'King,Queen': 'King − Man + Woman ≈ Queen. Classic Word2Vec analogy showing gendered role embeddings.',
+  'King,Man': 'Close neighbors in embedding space. Both royalty/masculine cluster.',
+  'Paris,France': 'Paris : France :: Berlin : Germany. Capital → Country relationship encoded in vector difference.',
+  'Paris,Berlin': 'Both European capitals. Similar directional relationship to their countries.',
+  'France,Germany': 'Neighboring countries. Similar political and economic context in training data.',
+  'Cat,Dog': 'Both animals, domestic pets. Similar contexts → nearby in embedding space.',
+  'Man,Woman': 'Gender dimension: a consistent direction in the embedding space.',
+  'King,France': 'Less directly related — would need larger embedding space to cluster meaningfully.',
+};
+let embedSelected = [];
+function embedClick(el, word) {
+  if (el.classList.contains('selected')) {
+    el.classList.remove('selected');
+    embedSelected = embedSelected.filter(w => w !== word);
+  } else if (embedSelected.length < 2) {
+    el.classList.add('selected');
+    embedSelected.push(word);
+  }
+  if (embedSelected.length === 2) {
+    const key1 = embedSelected[0]+','+embedSelected[1];
+    const key2 = embedSelected[1]+','+embedSelected[0];
+    const result = embedRelations[key1] || embedRelations[key2] || `"${embedSelected[0]}" and "${embedSelected[1]}" exist in the same high-dimensional vector space. Their cosine similarity reflects how often they appear in similar contexts.`;
+    document.getElementById('embed-result').textContent = result;
+  } else {
+    document.getElementById('embed-result').textContent = embedSelected.length === 1 ? `"${embedSelected[0]}" selected. Pick a second word...` : 'Select two words to see their relationship...';
+  }
+}
+
+// ── RL GRIDWORLD ──
+const GRID_SIZE = 8;
+let rlState = { agent: {x:0,y:0}, goal: {x:7,y:7}, obstacles: [{x:2,y:1},{x:2,y:2},{x:3,y:4},{x:4,y:3},{x:5,y:5},{x:1,y:5},{x:6,y:2}], visited: new Set(), reward: 0 };
+let rlInterval = null;
+
+function rlRender() {
+  const grid = document.getElementById('rl-grid');
+  grid.innerHTML = '';
+  for (let y = 0; y < GRID_SIZE; y++) {
+    for (let x = 0; x < GRID_SIZE; x++) {
+      const cell = document.createElement('div');
+      cell.className = 'rl-cell';
+      const key = x+','+y;
+      if (x === rlState.agent.x && y === rlState.agent.y) { cell.classList.add('agent'); cell.textContent = '🤖'; }
+      else if (x === rlState.goal.x && y === rlState.goal.y) { cell.classList.add('goal'); cell.textContent = '🏆'; }
+      else if (rlState.obstacles.some(o => o.x===x && o.y===y)) { cell.classList.add('obstacle'); cell.textContent = '🚧'; }
+      else if (rlState.visited.has(key)) { cell.classList.add('visited'); }
+      grid.appendChild(cell);
+    }
+  }
+  document.getElementById('rl-reward').textContent = rlState.reward;
+}
+
+function rlStep() {
+  const dirs = [{dx:0,dy:-1},{dx:0,dy:1},{dx:-1,dy:0},{dx:1,dy:0}];
+  const d = dirs[Math.floor(Math.random() * 4)];
+  const nx = rlState.agent.x + d.dx, ny = rlState.agent.y + d.dy;
+  if (nx < 0 || nx >= GRID_SIZE || ny < 0 || ny >= GRID_SIZE) { document.getElementById('rl-info').textContent = 'Hit boundary! No move.'; return; }
+  if (rlState.obstacles.some(o => o.x===nx && o.y===ny)) { rlState.reward -= 5; document.getElementById('rl-info').textContent = '🚧 Hit obstacle! -5 reward.'; rlRender(); return; }
+  rlState.visited.add(rlState.agent.x+','+rlState.agent.y);
+  rlState.agent = {x:nx, y:ny};
+  if (nx === rlState.goal.x && ny === rlState.goal.y) {
+    rlState.reward += 10;
+    document.getElementById('rl-info').textContent = '🏆 Goal reached! +10 reward. Resetting...';
+    setTimeout(() => { rlState.agent = {x:0,y:0}; rlState.visited.clear(); rlRender(); }, 800);
+  } else {
+    rlState.reward -= 0.1;
+    document.getElementById('rl-info').textContent = `Moved to (${nx},${ny}). -0.1 step cost.`;
+  }
+  rlRender();
+}
+function rlRun() {
+  if (rlInterval) { clearInterval(rlInterval); rlInterval = null; return; }
+  rlInterval = setInterval(rlStep, 180);
+}
+function rlReset() {
+  if (rlInterval) { clearInterval(rlInterval); rlInterval = null; }
+  rlState = { agent:{x:0,y:0}, goal:{x:7,y:7}, obstacles:[{x:2,y:1},{x:2,y:2},{x:3,y:4},{x:4,y:3},{x:5,y:5},{x:1,y:5},{x:6,y:2}], visited:new Set(), reward:0 };
+  document.getElementById('rl-info').textContent = '';
+  rlRender();
+}
+rlRender();
+
+// ── GENERATIVE AI ──
+function showGen(el, title, text) {
+  document.getElementById('gen-d-title').textContent = title;
+  document.getElementById('gen-d-text').textContent = text;
+  document.getElementById('gen-detail').style.display = 'block';
+}
+
+// ── STACK DETAIL ──
+function expandStack(el, title, text) {
+  document.getElementById('stack-d-title').textContent = title;
+  document.getElementById('stack-d-text').textContent = text;
+  const d = document.getElementById('stack-detail');
+  d.style.display = 'block';
+  d.scrollIntoView({behavior:'smooth', block:'nearest'});
+}
+
+// ── MLOPS PIPELINE ──
+function showPipe(key, title, text) {
+  document.getElementById('pipe-d-title').textContent = title;
+  document.getElementById('pipe-d-text').textContent = text;
+  document.getElementById('pipe-detail').style.display = 'block';
+}
+
+// ── ETHICS ──
+const ethicsData = {
+  fairness: { title: 'Fairness & Bias', text: 'Multiple incompatible fairness definitions exist — you cannot simultaneously satisfy demographic parity (equal positive rates), equalized odds (equal TPR/FPR), and calibration. The right definition depends on context. Tools: Fairlearn, AI Fairness 360, Aequitas. Key cases: COMPAS criminal recidivism, Amazon resume screening, facial recognition disparities.' },
+  transparency: { title: 'Transparency & Explainability', text: 'Black-box models (deep nets) are hard to explain. LIME: perturb input, fit local linear model. SHAP: Shapley values assign credit to each feature — theoretically grounded and consistent. Attention maps for transformers. Counterfactual explanations: "if X were different, output would change." GDPR mandates meaningful explanation for automated decisions.' },
+  privacy: { title: 'Privacy & Data Protection', text: 'Federated learning: train on data without it leaving devices (used in Gboard). Differential privacy: add calibrated noise to queries/gradients so individual records can\'t be extracted (DP-SGD, Apple\'s DP deployment). Data minimization: collect only what\'s needed. Right to erasure: machine unlearning is an open research problem.' },
+  accountability: { title: 'Accountability & Governance', text: 'Model cards (Google): document model purpose, performance across subgroups, limitations. Datasheets for datasets (Gebru et al.): provenance, collection process, recommended uses. AI incident database: catalog of real-world failures. Questions: who is liable when an autonomous vehicle crashes? The developer? Deployer? Regulator?' },
+};
+function showEthics(key) {
+  const d = document.getElementById('ethics-detail');
+  document.getElementById('ethics-d-title').textContent = ethicsData[key].title;
+  document.getElementById('ethics-d-text').textContent = ethicsData[key].text;
+  d.style.display = 'block';
+  d.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+</script>
+</body>
+</html>
